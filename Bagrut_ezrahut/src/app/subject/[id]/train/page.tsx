@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, useParams } from 'next/navigation'
 import { X, CheckCircle2, XCircle, Loader2 } from 'lucide-react'
-import DesktopOnly from '../../../components/DesktopOnly'
-import { allQuestions, Question } from '../../../../data/ezrahut'
+import DesktopOnly from '../../../components/ui/DesktopOnly'
+import { allQuestions, Question } from '../../../../data/subjects/ezrahut'
 
 // Fisher-Yates Shuffle алгоритм для качественного перемешивания массива
 function shuffleArray<T>(array: T[]): T[] {

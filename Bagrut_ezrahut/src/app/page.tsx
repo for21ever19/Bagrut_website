@@ -2,17 +2,28 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import DesktopOnly from './components/DesktopOnly'
-import HandDrawnFolder from './components/HandDrawnFolder'
+import DesktopOnly from './components/ui/DesktopOnly'
+import HandDrawnFolder from './components/features/backpack/HandDrawnFolder'
 
-const subjects = [
+type Position = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+
+interface Subject {
+  id: string
+  label: string
+  color: string
+  position: Position
+  delay: number
+  imageSrc: string
+}
+
+const subjects: Subject[] = [
   {
     id: 'history',
     label: 'История',
     color: '#E6B89C',
     position: 'top-left', // Слева-Сверху
     delay: 0.2,
-    imageSrc: '/folder-history.png',
+    imageSrc: '/images/folders/folder-history.png',
   },
   {
     id: 'civics',
@@ -20,7 +31,7 @@ const subjects = [
     color: '#9FB8AD',
     position: 'bottom-left', // Слева-Снизу
     delay: 0.4,
-    imageSrc: '/folder-civics.png',
+    imageSrc: '/images/folders/folder-civics.png',
   },
   {
     id: 'tanakh',
@@ -28,7 +39,7 @@ const subjects = [
     color: '#D4C5A8',
     position: 'top-right', // Справа-Сверху
     delay: 0.3,
-    imageSrc: '/folder-tanakh.png',
+    imageSrc: '/images/folders/folder-tanakh.png',
   },
   {
     id: 'literature',
@@ -36,7 +47,7 @@ const subjects = [
     color: '#C7B2BE',
     position: 'bottom-right', // Справа-Снизу
     delay: 0.5,
-    imageSrc: '/folder-lit.png',
+    imageSrc: '/images/folders/folder-lit.png',
   },
 ]
 
@@ -60,7 +71,7 @@ export default function Home() {
               className="relative z-0 pointer-events-none"
             >
               <Image
-                src="/backpack.jpg"
+                src="/images/backpack.jpg"
                 alt="Рюкзак"
                 width={500}
                 height={500}

@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import DesktopOnly from '../../../components/DesktopOnly'
-import CivicsContent from '../../../components/materials/CivicsContent'
-import DefaultContent from '../../../components/materials/DefaultContent'
+import DesktopOnly from '../../../components/ui/DesktopOnly'
+import CivicsContent from '../../../components/features/subjects/materials/CivicsContent'
+import DefaultContent from '../../../components/features/subjects/materials/DefaultContent'
 
 const subjectNames: Record<string, string> = {
   history: 'История',

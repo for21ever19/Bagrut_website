@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, useParams } from 'next/navigation'
 import { Home } from 'lucide-react'
 import Link from 'next/link'
-import DesktopOnly from '../../components/DesktopOnly'
+import DesktopOnly from '../../components/ui/DesktopOnly'
 
 const subjectNames: Record<string, string> = {
   history: 'История',
