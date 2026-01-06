@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Nunito:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-canvas text-ink;
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Merriweather', serif;
+  }
+}
+
+@layer utilities {
+  .hand-drawn-border {
+    border: 2px solid #6B6644;
+    box-shadow: 4px 4px 0px #6B6644;
+  }
+  
+  .hand-drawn-border-lg {
+    border: 2px solid #6B6644;
+    box-shadow: 6px 6px 0px #6B6644;
+  }
+  
+  /* Скрытие скроллбара с сохранением функционала */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE и Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari и Opera */
+  }
+}
+
