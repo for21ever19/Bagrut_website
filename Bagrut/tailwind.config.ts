@@ -9,9 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: '#F9E4D4',
-        ink: '#6B6644',
-        'accent-gold': '#D9A521',
+        canvas: '#F2E3CB',
+        ink: '#5C6B44',
+        'accent-gold': '#E1C858',
         'folder-history': '#E6B89C',
         'folder-civics': '#9FB8AD',
         'folder-tanakh': '#D4C5A8',

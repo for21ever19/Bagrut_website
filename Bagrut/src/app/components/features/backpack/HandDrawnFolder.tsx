@@ -31,15 +31,15 @@ export default function HandDrawnFolder({
   const getPositionClasses = () => {
     switch (position) {
       case 'top-left':
-        return 'top-10 left-0'
+        return 'top-20 left-12'
       case 'top-right':
-        return 'top-10 right-0'
+        return 'top-20 right-12'
       case 'bottom-left':
-        return 'bottom-10 left-0'
+        return 'bottom-20 left-12'
       case 'bottom-right':
-        return 'bottom-10 right-0'
+        return 'bottom-20 right-12'
       default:
-        return 'top-10 left-0'
+        return 'top-20 left-12'
     }
   }
 
@@ -75,7 +75,7 @@ export default function HandDrawnFolder({
         
         {/* Текст метки */}
         <div
-          className="absolute bottom-[-35px] left-1/2 transform -translate-x-1/2 whitespace-nowrap font-sans text-[15px] font-semibold text-ink"
+          className="absolute bottom-[-6px] left-1/2 transform -translate-x-1/2 whitespace-nowrap font-sans text-[15px] font-semibold text-ink"
           style={{
             textShadow: '1px 1px 0px #F9E4D4',
           }}

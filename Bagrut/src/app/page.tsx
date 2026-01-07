@@ -62,7 +62,7 @@ export default function Home() {
           className="h-full w-full flex items-center justify-center relative"
         >
           {/* Центральный контейнер с фиксированными размерами */}
-          <div className="relative w-[800px] h-[600px] flex items-center justify-center">
+          <div className="relative w-[900px] h-[700px] flex items-center justify-center">
             {/* Центральное изображение рюкзака */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -71,10 +71,10 @@ export default function Home() {
               className="relative z-0 pointer-events-none"
             >
               <Image
-                src="/images/backpack.jpg"
+                src="/images/backpack.png"
                 alt="Рюкзак"
-                width={500}
-                height={500}
+                width={625}
+                height={625}
                 className="object-contain mix-blend-multiply"
                 priority
               />

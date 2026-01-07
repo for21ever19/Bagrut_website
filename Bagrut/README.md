@@ -107,7 +107,7 @@
 - **Заголовки**: `Merriweather` (шрифт с засечками, книжный стиль)
 - **Основной текст**: `Nunito` (округлый гротеск)
 
-Шрифты подключены через Google Fonts в `app/globals.css`.
+Шрифты подключены через Google Fonts в `src/app/globals.css`.
 
 ### Визуальный стиль
 
@@ -133,7 +133,7 @@
 1. **Клонируйте репозиторий** (если применимо):
    ```bash
    git clone <repository-url>
-   cd Bagrut_ezrahut
+   cd Bagrut
    ```
 
 2. **Установите зависимости**:
@@ -168,62 +168,91 @@ npm run lint
 
 ## 📁 Структура проекта
 
+Проект организован с использованием **мета-папки `src/`**, которая содержит все исходники проекта. Это улучшает масштабируемость и организацию кода.
+
 ```
-Bagrut_ezrahut/
-├── app/
-│   ├── components/
-│   │   ├── DesktopOnly.tsx              # Проверка ширины экрана
-│   │   ├── HandDrawnFolder.tsx         # Компонент папки с PNG-изображением
-│   │   ├── Toast.tsx                   # Уведомления
-│   │   └── materials/
-│   │       ├── CivicsContent.tsx        # Главный компонент контента Эзрахут
-│   │       ├── CivicsContent1.tsx       # Раздел I: Ядро экзамена
-│   │       ├── CivicsContent2.tsx       # Раздел II: Государство, закон и власть
-│   │       ├── CivicsContent3.tsx       # Раздел III: Общество, меньшинства, идеологии
-│   │       ├── CivicsContent4.tsx       # Раздел IV: Процессы и механизмы
-│   │       ├── CivicsContent5.tsx       # Раздел V: Низкоприоритетные темы
-│   │       ├── DefaultContent.tsx       # Заглушка для других предметов
-│   │       └── SubjectContent.tsx       # Общий компонент контента
-│   ├── subject/
-│   │   └── [id]/
-│   │       ├── page.tsx                 # Страница выбора раздела (материалы/тренировка)
-│   │       ├── learn/
-│   │       │   └── page.tsx             # Страница учебных материалов
-│   │       └── train/
-│   │           └── page.tsx             # Страница тренировки с вопросами
-│   ├── globals.css                      # Глобальные стили
-│   ├── layout.tsx                       # Корневой layout
-│   └── page.tsx                         # Главная страница
-├── data/
-│   ├── ezrahut/
-│   │   ├── 1.1.json                     # Вопросы по теме 1.1
-│   │   ├── 1.2-1.10.json                # Вопросы по темам 1.2-1.10
-│   │   ├── 2.json                       # Вопросы по теме 2
-│   │   ├── 3.json                       # Вопросы по теме 3
-│   │   ├── 4.json                       # Вопросы по теме 4
-│   │   ├── 5.json                       # Вопросы по теме 5
-│   │   ├── 7.json                       # Вопросы по теме 7
-│   │   ├── 8.json                       # Вопросы по теме 8
-│   │   ├── 9.json                       # Вопросы по теме 9
-│   │   ├── 10-11.json                   # Вопросы по темам 10-11
-│   │   ├── 12-13.json                   # Вопросы по темам 12-13
-│   │   ├── 14-15.json                   # Вопросы по темам 14-15
-│   │   ├── 16-17-18.json                # Вопросы по темам 16-17-18
-│   │   ├── 19-20-21-22.json             # Вопросы по темам 19-20-21-22
-│   │   └── index.ts                     # Экспорт всех вопросов
-│   └── mockQuestions.ts                 # Моковые вопросы (не используется)
-├── public/
-│   ├── backpack.jpg                     # Изображение рюкзака
-│   ├── folder-history.png                # PNG-изображение папки "История"
-│   ├── folder-civics.png                 # PNG-изображение папки "Эзрахут"
-│   ├── folder-tanakh.png                 # PNG-изображение папки "Танах"
-│   └── folder-lit.png                    # PNG-изображение папки "Литература"
-├── tailwind.config.ts                    # Конфигурация Tailwind
-├── tsconfig.json                         # Конфигурация TypeScript
-├── postcss.config.js                     # Конфигурация PostCSS
-├── package.json                          # Зависимости проекта
-└── README.md                             # Этот файл
+Bagrut/
+├── src/                                 # 🎯 МЕТА-ПАПКА: Все исходники проекта
+│   ├── app/                             # Next.js App Router
+│   │   ├── components/
+│   │   │   ├── ui/                      # Базовые UI компоненты
+│   │   │   │   ├── DesktopOnly.tsx      # Проверка ширины экрана
+│   │   │   │   └── Toast.tsx            # Уведомления
+│   │   │   └── features/                # Компоненты по фичам
+│   │   │       ├── backpack/
+│   │   │       │   └── HandDrawnFolder.tsx  # Компонент папки с PNG-изображением
+│   │   │       └── subjects/
+│   │   │           └── materials/       # Компоненты материалов по предметам
+│   │   │               ├── CivicsContent.tsx        # Главный компонент контента Эзрахут
+│   │   │               ├── CivicsContent1.tsx       # Раздел I: Ядро экзамена
+│   │   │               ├── CivicsContent2.tsx       # Раздел II: Государство, закон и власть
+│   │   │               ├── CivicsContent3.tsx       # Раздел III: Общество, меньшинства, идеологии
+│   │   │               ├── CivicsContent4.tsx       # Раздел IV: Процессы и механизмы
+│   │   │               ├── CivicsContent5.tsx       # Раздел V: Низкоприоритетные темы
+│   │   │               ├── DefaultContent.tsx       # Заглушка для других предметов
+│   │   │               └── SubjectContent.tsx       # Общий компонент контента
+│   │   ├── subject/
+│   │   │   └── [id]/
+│   │   │       ├── page.tsx              # Страница выбора раздела (материалы/тренировка)
+│   │   │       ├── learn/
+│   │   │       │   └── page.tsx          # Страница учебных материалов
+│   │   │       └── train/
+│   │   │           └── page.tsx          # Страница тренировки с вопросами
+│   │   ├── globals.css                  # Глобальные стили
+│   │   ├── layout.tsx                   # Корневой layout
+│   │   └── page.tsx                     # Главная страница
+│   │
+│   ├── data/                            # Все данные проекта
+│   │   ├── subjects/                    # Данные по предметам
+│   │   │   ├── ezrahut/
+│   │   │   │   ├── questions/           # Вопросы для тренировки
+│   │   │   │   │   ├── 1.1.json         # Вопросы по теме 1.1
+│   │   │   │   │   ├── 1.2-1.10.json   # Вопросы по темам 1.2-1.10
+│   │   │   │   │   ├── 2.json           # Вопросы по теме 2
+│   │   │   │   │   ├── 3.json           # Вопросы по теме 3
+│   │   │   │   │   ├── 4.json           # Вопросы по теме 4
+│   │   │   │   │   ├── 5.json           # Вопросы по теме 5
+│   │   │   │   │   ├── 7.json           # Вопросы по теме 7
+│   │   │   │   │   ├── 8.json           # Вопросы по теме 8
+│   │   │   │   │   ├── 9.json           # Вопросы по теме 9
+│   │   │   │   │   ├── 10-11.json       # Вопросы по темам 10-11
+│   │   │   │   │   ├── 12-13.json       # Вопросы по темам 12-13
+│   │   │   │   │   ├── 14-15.json       # Вопросы по темам 14-15
+│   │   │   │   │   ├── 16-17-18.json    # Вопросы по темам 16-17-18
+│   │   │   │   │   └── 19-20-21-22.json # Вопросы по темам 19-20-21-22
+│   │   │   │   └── index.ts              # Экспорт всех вопросов
+│   │   │   ├── history/                 # История (готово для будущего)
+│   │   │   ├── tanakh/                  # Танах (готово для будущего)
+│   │   │   └── literature/               # Литература (готово для будущего)
+│   │   └── shared/                      # Общие данные
+│   │       └── mockQuestions.ts          # Моковые вопросы (не используется)
+│   │
+│   ├── lib/                             # Утилиты и хелперы (готово для использования)
+│   └── types/                           # TypeScript типы (готово для использования)
+│
+├── public/                              # Статические файлы (Next.js требует в корне)
+│   └── images/                          # Организованные изображения
+│       ├── backpack.jpg                 # Изображение рюкзака
+│       └── folders/                     # PNG-изображения папок
+│           ├── folder-history.png       # Папка "История"
+│           ├── folder-civics.png       # Папка "Эзрахут"
+│           ├── folder-tanakh.png        # Папка "Танах"
+│           └── folder-lit.png           # Папка "Литература"
+│
+├── tailwind.config.ts                   # Конфигурация Tailwind
+├── tsconfig.json                        # Конфигурация TypeScript
+├── postcss.config.js                    # Конфигурация PostCSS
+├── package.json                         # Зависимости проекта
+└── README.md                            # Этот файл
 ```
+
+### Преимущества структуры с `src/`
+
+- ✅ **Единая мета-папка** для всех исходников
+- ✅ **Четкое разделение**: `app/`, `data/`, `lib/`, `types/`
+- ✅ **Масштабируемость**: легко добавлять новые предметы
+- ✅ **Организация компонентов**: `ui/` и `features/`
+- ✅ **Упорядоченные данные**: `data/subjects/` по предметам
 
 ---
 
@@ -369,7 +398,7 @@ Bagrut_ezrahut/
 - Визуальная индикация правильных/неправильных ответов
 - Автоматическое отображение пояснения после выбора ответа
 - Кнопка "Пройти снова" для генерации новых вопросов
-- Поддержка только для Эзрахут (вопросы из `data/ezrahut/`)
+- Поддержка только для Эзрахут (вопросы из `src/data/subjects/ezrahut/`)
 
 **Результаты:**
 - Показывает количество правильных ответов
@@ -382,7 +411,7 @@ Bagrut_ezrahut/
 
 ### Структура вопросов
 
-Вопросы хранятся в JSON-файлах в папке `data/ezrahut/`:
+Вопросы хранятся в JSON-файлах в папке `src/data/subjects/ezrahut/questions/`:
 
 ```typescript
 interface Question {
@@ -414,9 +443,11 @@ interface Question {
 
 ### Экспорт данных
 
-Все вопросы объединяются в `data/ezrahut/index.ts`:
+Все вопросы объединяются в `src/data/subjects/ezrahut/index.ts`:
 - `allQuestions: Question[]` — массив всех вопросов
 - `totalQuestionsCount: number` — общее количество вопросов
+
+**Примечание:** Пути к JSON файлам в `index.ts` должны быть `./questions/[filename].json`
 
 ---
 
@@ -486,7 +517,7 @@ interface Question {
 
 ### Добавление нового предмета
 
-1. **Добавьте предмет в массив `subjects` в `app/page.tsx`**:
+1. **Добавьте предмет в массив `subjects` в `src/app/page.tsx`**:
    ```tsx
    {
      id: 'new-subject',
@@ -494,27 +525,27 @@ interface Question {
      color: '#HEX_COLOR',
      position: 'top-left', // или 'top-right', 'bottom-left', 'bottom-right'
      delay: 0.6,
-     imageSrc: '/folder-new-subject.png',
+     imageSrc: '/images/folders/folder-new-subject.png',
    }
    ```
 
-2. **Добавьте PNG-изображение папки** в `public/folder-new-subject.png`
+2. **Добавьте PNG-изображение папки** в `public/images/folders/folder-new-subject.png`
 
 3. **Добавьте название в `subjectNames`** в соответствующих файлах:
-   - `app/subject/[id]/page.tsx`
-   - `app/subject/[id]/learn/page.tsx`
-   - `app/subject/[id]/train/page.tsx`
+   - `src/app/subject/[id]/page.tsx`
+   - `src/app/subject/[id]/learn/page.tsx`
+   - `src/app/subject/[id]/train/page.tsx`
 
-4. **Создайте компонент контента** в `app/components/materials/NewSubjectContent.tsx` (если нужен)
+4. **Создайте компонент контента** в `src/app/components/features/subjects/materials/NewSubjectContent.tsx` (если нужен)
 
-5. **Добавьте контент в `learn/page.tsx`**:
+5. **Добавьте контент в `src/app/subject/[id]/learn/page.tsx`**:
    ```tsx
    {subjectId === 'new-subject' ? <NewSubjectContent /> : <DefaultContent />}
    ```
 
 ### Добавление вопросов для тренировки
 
-1. **Создайте JSON-файл** в `data/[subject]/`:
+1. **Создайте JSON-файл** в `src/data/subjects/[subject]/questions/`:
    ```json
    [
      {
@@ -527,15 +558,15 @@ interface Question {
    ]
    ```
 
-2. **Импортируйте файл в `data/[subject]/index.ts`**:
+2. **Импортируйте файл в `src/data/subjects/[subject]/index.ts`**:
    ```ts
-   import questions from './questions.json'
+   import questions from './questions/questions.json'
    export const allQuestions: Question[] = [...questions]
    ```
 
-3. **Используйте в `train/page.tsx`**:
+3. **Используйте в `src/app/subject/[id]/train/page.tsx`**:
    ```tsx
-   import { allQuestions } from '../../../../data/[subject]'
+   import { allQuestions } from '../../../../data/subjects/[subject]'
    ```
 
 ### Кастомизация цветов
@@ -560,10 +591,11 @@ colors: {
 ## 📝 Заметки
 
 - **Только Desktop**: Сайт оптимизирован для работы на компьютере (ширина ≥ 1024px)
-- **PNG-изображения папок**: Должны находиться в `public/` с именами `folder-[subject].png`
-- **Изображение рюкзака**: Должно находиться в `public/backpack.jpg`
+- **PNG-изображения папок**: Должны находиться в `public/images/folders/` с именами `folder-[subject].png`
+- **Изображение рюкзака**: Должно находиться в `public/images/backpack.jpg`
 - **Эзрахут полностью реализован**: Раздел "Учебные материалы" и "Тренировка" работают полностью
 - **Другие предметы**: Показывают заглушки в разделе материалов
+- **Структура с `src/`**: Все исходники находятся в мета-папке `src/` для лучшей организации
 
 ---
 
