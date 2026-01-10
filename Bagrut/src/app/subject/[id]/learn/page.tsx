@@ -6,6 +6,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import DesktopOnly from '../../../components/ui/DesktopOnly'
 import CivicsContent from '../../../components/features/subjects/materials/CivicsContent'
+import LiteratureContent from '../../../components/features/subjects/materials/LiteratureContent'
 import DefaultContent from '../../../components/features/subjects/materials/DefaultContent'
 
 const subjectNames: Record<string, string> = {
@@ -53,6 +54,54 @@ const civicsChapters = [
   { id: 'preference-policy', label: '22. Политика предпочтения ⭐' },
 ]
 
+const literatureChapters = [
+  // Поэзия еврейского Средневековья
+  { id: 'medieval-poetry', label: 'Поэзия еврейского Средневековья' },
+  { id: 'medieval-intro', label: 'Поэзия еврейского Средневековья (Введение)' },
+  { id: 'sleeping-childhood', label: '«Спящая в объятиях детства»' },
+  { id: 'heart-east', label: '«Сердце моё на Востоке»' },
+  { id: 'look-sun', label: '«Посмотри на солнце»' },
+  { id: 'humble-spirit', label: '«Шфаль руах» — «Смирен духом»' },
+  
+  // Деяния мудрецов
+  { id: 'maase-hachamim', label: 'Деяния мудрецов' },
+  { id: 'rabbi-yanai-merchant', label: '«Рабби Янай и торговец»' },
+  { id: 'mar-ukva-wife', label: '«Мар Уква и его жена»' },
+  
+  // Новая поэзия
+  { id: 'new-poetry', label: 'Новая поэзия' },
+  { id: 'look-earth', label: '«Смотри, земля»' },
+  { id: 'pine', label: '«Сосна»' },
+  { id: 'meeting-half-meeting', label: '«Пéгиша, хáци пéгиша»' },
+  { id: 'sad-melody', label: '«Зéмер нóга»' },
+  { id: 'melody-returns', label: '«Ещё возвращается напев»' },
+  { id: 'swimmers', label: '«Пловцы»' },
+  { id: 'black-gold-forehead', label: '«Твой лоб увенчан чёрным золотом»' },
+  
+  // Бялик
+  { id: 'bialik', label: 'Бялик' },
+  { id: 'light-not-free', label: '«Я не получил свет даром»' },
+  { id: 'sat-window', label: '«Она сидела у окна»' },
+  { id: 'alone', label: '«Левáди»' },
+  { id: 'bring-under-wing', label: '«Введи меня под крыло твоё»' },
+  
+  // Тоска
+  { id: 'toska', label: 'Тоска' },
+  { id: 'toska-chekhov', label: '«Тоска»' },
+  
+  // Госпожа и торговец
+  { id: 'mistress-merchant', label: 'Госпожа и торговец' },
+  { id: 'mistress-merchant-agnon', label: '«Госпожа и торговец»' },
+  
+  // Слепая
+  { id: 'blind', label: 'Слепая' },
+  { id: 'blind-steinberg', label: '«Слепая»' },
+  
+  // Хизо Батата
+  { id: 'hizo-batata', label: 'Хизо Батата' },
+  { id: 'hizo-batata-bardogo', label: '«Хизо Батата»' },
+]
+
 const defaultChapters = [
   { id: 'chapter-1', label: 'Глава 1: Введение' },
   { id: 'chapter-2', label: 'Глава 2: Основные понятия' },
@@ -66,12 +115,34 @@ function isRomanNumeralSection(label: string): boolean {
   return /^[IVX]+\./.test(label.trim())
 }
 
+// Функция для определения главных разделов литературы
+function isLiteratureMainSection(label: string): boolean {
+  // Главные разделы - это названия разделов без кавычек и без "(Введение)"
+  // Примеры главных: "Поэзия еврейского Средневековья", "Деяния мудрецов", "Бялик"
+  // Примеры подразделов: "«Спящая в объятиях детства»", "Поэзия еврейского Средневековья (Введение)"
+  const mainSections = [
+    'Поэзия еврейского Средневековья',
+    'Деяния мудрецов',
+    'Новая поэзия',
+    'Бялик',
+    'Тоска',
+    'Госпожа и торговец',
+    'Слепая',
+    'Хизо Батата'
+  ]
+  return mainSections.includes(label)
+}
+
 export default function LearnPage() {
   const router = useRouter()
   const params = useParams()
   const subjectId = params.id as string
   const subjectName = subjectNames[subjectId] || 'Предмет'
-  const chapters = subjectId === 'civics' ? civicsChapters : defaultChapters
+  const chapters = subjectId === 'civics' 
+    ? civicsChapters 
+    : subjectId === 'literature' 
+    ? literatureChapters 
+    : defaultChapters
   const [activeChapter, setActiveChapter] = useState<string>('')
 
   // Отслеживание активного раздела при скролле
@@ -157,13 +228,14 @@ export default function LearnPage() {
                 <nav className="max-h-[calc(100vh-120px)] overflow-y-auto scrollbar-hide pr-4">
                   {chapters.map((chapter) => {
                     const isRoman = isRomanNumeralSection(chapter.label)
+                    const isLiteratureMain = subjectId === 'literature' && isLiteratureMainSection(chapter.label)
                     const isActive = activeChapter === chapter.id
                     
                     // Определяем классы в зависимости от типа пункта
                     let linkClasses = "block transition-colors cursor-pointer "
                     
-                    if (isRoman) {
-                      // Римские цифры (I., II., III.) - главные разделы
+                    if (isRoman || isLiteratureMain) {
+                      // Римские цифры (I., II., III.) или главные разделы литературы - главные разделы
                       linkClasses += "font-bold text-gray-800 mt-6 mb-2 text-sm "
                       if (isActive) {
                         linkClasses += "text-accent-gold border-l-2 border-accent-gold pl-3"
@@ -171,7 +243,7 @@ export default function LearnPage() {
                         linkClasses += "pl-0"
                       }
                     } else {
-                      // Арабские цифры (1., 2., 3.) - подпункты
+                      // Арабские цифры (1., 2., 3.) или подпункты литературы - подпункты
                       linkClasses += "text-gray-600 font-medium text-sm py-1 "
                       if (isActive) {
                         linkClasses += "text-accent-gold border-l-2 border-accent-gold pl-3"
@@ -210,7 +282,13 @@ export default function LearnPage() {
               transition={{ delay: 0.3 }}
               className="flex-1 bg-[#FFFCF5] border-2 border-ink rounded-r-lg shadow-md p-8 min-h-[600px]"
             >
-              {subjectId === 'civics' ? <CivicsContent /> : <DefaultContent />}
+              {subjectId === 'civics' ? (
+                <CivicsContent />
+              ) : subjectId === 'literature' ? (
+                <LiteratureContent />
+              ) : (
+                <DefaultContent />
+              )}
             </motion.main>
           </div>
         </motion.div>

@@ -60,6 +60,7 @@ export default function TrainPage() {
   const [isFinished, setIsFinished] = useState(false)
   const [showExplanation, setShowExplanation] = useState(false)
   const [wrongQuestionIds, setWrongQuestionIds] = useState<number[]>([]) // ID вопросов с неправильными ответами в текущей сессии
+  const [initialQuestionsCount, setInitialQuestionsCount] = useState<number>(0) // Исходное количество вопросов для отслеживания
 
   // Сброс флага загрузки при изменении режима или subjectId
   useEffect(() => {
@@ -68,12 +69,26 @@ export default function TrainPage() {
 
   // Загрузка вопросов в зависимости от режима
   useEffect(() => {
-    console.log('[DEBUG] useEffect triggered:', { mode, subjectId, userProgressKeys: Object.keys(userProgress), questionsLoaded })
+    console.log('[DEBUG useEffect questions] Срабатывание:', { 
+      mode, 
+      subjectId, 
+      userProgressKeys: Object.keys(userProgress), 
+      questionsLoaded,
+      questionsLength: questions.length,
+      isFinished,
+      currentQuestionIndex,
+      correctAnswers
+    })
     
     // КРИТИЧНО: Если вопросы уже загружены и тренировка началась, не перезагружаем их
     // Это предотвращает изменение вопросов во время ответа пользователя
-    if (questionsLoaded && questions.length > 0 && !isFinished) {
-      console.log('[DEBUG] Questions already loaded and training in progress, skipping reload')
+    // Дополнительная проверка: если тест в процессе (есть текущий вопрос), не перезагружаем
+    if (questionsLoaded && questions.length > 0 && !isFinished && currentQuestionIndex < questions.length) {
+      console.log('[DEBUG useEffect questions] Questions already loaded and training in progress, skipping reload', {
+        questionsLength: questions.length,
+        currentQuestionIndex,
+        isFinished
+      })
       return
     }
     
@@ -118,8 +133,30 @@ export default function TrainPage() {
       
       // Теперь проверяем наличие ошибок для этого предмета
       if (storedWrongQuestionIds.length === 0) {
-        // Нет ошибок - показываем сообщение
-        console.log('[DEBUG] No mistakes found, showing empty state')
+        // Нет ошибок - но НЕ очищаем вопросы, если тест в процессе ИЛИ только что завершился
+        // Если тест уже завершен, не трогаем вопросы - они нужны для расчета процента
+        console.log('[DEBUG useEffect questions] No mistakes found, checking if test is in progress', {
+          isFinished,
+          currentQuestionIndex,
+          questionsLength: questions.length,
+          questionsLoaded,
+          initialQuestionsCount
+        })
+        
+        // КРИТИЧНО: Если тест завершен, НЕ очищаем вопросы - они нужны для экрана завершения
+        if (isFinished) {
+          console.log('[DEBUG useEffect questions] Test finished, keeping questions for result screen')
+          return
+        }
+        
+        // Если тест в процессе (есть текущий вопрос), не трогаем вопросы
+        if (questionsLoaded && questions.length > 0 && currentQuestionIndex < questions.length) {
+          console.log('[DEBUG useEffect questions] Test in progress, not clearing questions')
+          return
+        }
+        
+        // Иначе - показываем пустое состояние (тест еще не начат)
+        console.log('[DEBUG useEffect questions] No mistakes found, showing empty state')
         setQuestions([])
         setIsLoading(false)
         return
@@ -221,6 +258,7 @@ export default function TrainPage() {
       const shuffledMistakes = shuffleArray(mistakesQuestions)
       console.log('[DEBUG] Setting questions (mistakes mode):', shuffledMistakes.length)
       setQuestions(shuffledMistakes)
+      setInitialQuestionsCount(shuffledMistakes.length) // Сохраняем исходное количество
       setIsLoading(false)
       setQuestionsLoaded(true) // Отмечаем, что вопросы загружены
     } else if (mode === null || mode !== 'mistakes') {
@@ -230,6 +268,7 @@ export default function TrainPage() {
       const randomQuestions = getRandomQuestions(allQuestions, 10)
       console.log('[DEBUG] Setting questions (normal mode):', randomQuestions.length)
       setQuestions(randomQuestions)
+      setInitialQuestionsCount(randomQuestions.length) // Сохраняем исходное количество
       setIsLoading(false)
       setQuestionsLoaded(true) // Отмечаем, что вопросы загружены
     } else {
@@ -249,9 +288,26 @@ export default function TrainPage() {
 
   // Сохранение результатов при завершении теста
   useEffect(() => {
+    console.log('[DEBUG saveResult useEffect] Срабатывание:', {
+      isFinished,
+      questionsLength: questions.length,
+      initialQuestionsCount,
+      correctAnswers,
+      totalQuestions: questions.length,
+      wrongQuestionIdsCount: wrongQuestionIds.length,
+      mode,
+      willSave: isFinished && questions.length > 0
+    })
     if (isFinished && questions.length > 0) {
       const allQuestionIds = questions.map((q) => q.id)
       const totalQuestionsCount = questions.length
+      console.log('[DEBUG saveResult useEffect] Сохранение результатов:', {
+        subjectId,
+        correctAnswers,
+        totalQuestionsCount,
+        wrongQuestionIds,
+        allQuestionIds
+      })
       saveResult(
         subjectId,
         correctAnswers,
@@ -259,13 +315,33 @@ export default function TrainPage() {
         wrongQuestionIds,
         allQuestionIds
       )
+    } else if (isFinished && questions.length === 0) {
+      console.warn('[DEBUG saveResult useEffect] ПРОБЛЕМА: isFinished=true, но questions.length=0!', {
+        correctAnswers,
+        initialQuestionsCount,
+        mode,
+        userProgressWrongIds: userProgress[subjectId]?.wrongQuestionIds?.length || 0
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFinished]) // Сохраняем только один раз при завершении теста
 
   const currentQuestion = questions[currentQuestionIndex]
-  const totalQuestions = questions.length
+  // Используем initialQuestionsCount как fallback, если questions.length = 0
+  const totalQuestions = questions.length > 0 ? questions.length : initialQuestionsCount
   const progressPercent = totalQuestions > 0 ? ((currentQuestionIndex + 1) / totalQuestions) * 100 : 0
+  
+  // Логирование для отслеживания расхождения между initialQuestionsCount и questions.length
+  if (initialQuestionsCount > 0 && questions.length !== initialQuestionsCount && !isFinished) {
+    console.warn('[DEBUG] РАСХОЖДЕНИЕ: initialQuestionsCount !== questions.length', {
+      initialQuestionsCount,
+      questionsLength: questions.length,
+      isFinished,
+      currentQuestionIndex,
+      correctAnswers,
+      mode
+    })
+  }
   
   // Защита от undefined: если currentQuestion не существует, показываем загрузку
   if (!currentQuestion && questions.length > 0) {
@@ -295,14 +371,37 @@ export default function TrainPage() {
       return
     }
 
+    console.log('[DEBUG handleAnswerSelect] Начало:', {
+      answer,
+      correctAnswer: currentQuestion.correctAnswer,
+      currentQuestionIndex,
+      totalQuestions: questions.length,
+      correctAnswers,
+      isFinished,
+      mode,
+      questionsLoaded
+    })
+
     setSelectedAnswer(answer)
     setShowExplanation(true)
 
     if (answer === currentQuestion.correctAnswer) {
-      setCorrectAnswers(correctAnswers + 1)
+      const newCorrectAnswers = correctAnswers + 1
+      console.log('[DEBUG handleAnswerSelect] Правильный ответ:', {
+        oldCorrectAnswers: correctAnswers,
+        newCorrectAnswers,
+        questionId: currentQuestion.id,
+        isLastQuestion: currentQuestionIndex === questions.length - 1
+      })
+      setCorrectAnswers(newCorrectAnswers)
       
       // Если мы в режиме "Работа над ошибками" и ответ правильный, удаляем вопрос из списка ошибок
       if (mode === 'mistakes') {
+        console.log('[DEBUG handleAnswerSelect] Вызываю resolveMistake:', {
+          subjectId,
+          questionId: currentQuestion.id,
+          currentWrongIds: userProgress[subjectId]?.wrongQuestionIds?.length || 0
+        })
         resolveMistake(subjectId, currentQuestion.id)
       }
     } else {
@@ -322,6 +421,16 @@ export default function TrainPage() {
       setSelectedAnswer(null)
       setShowExplanation(false)
     } else {
+      console.log('[DEBUG handleNext] Завершение теста:', {
+        currentQuestionIndex,
+        totalQuestions: questions.length,
+        initialQuestionsCount,
+        correctAnswers,
+        questionsLength: questions.length,
+        isFinished,
+        mode,
+        wrongQuestionIdsCount: wrongQuestionIds.length
+      })
       setIsFinished(true)
     }
   }
@@ -377,12 +486,14 @@ export default function TrainPage() {
         
         const shuffledMistakes = shuffleArray(mistakesQuestions)
         setQuestions(shuffledMistakes)
+        setInitialQuestionsCount(shuffledMistakes.length) // Сохраняем исходное количество
         setQuestionsLoaded(true) // Отмечаем, что вопросы загружены
       }
     } else {
       // Обычный режим - генерируем новые случайные вопросы
       const randomQuestions = getRandomQuestions(allQuestions, 10)
       setQuestions(randomQuestions)
+      setInitialQuestionsCount(randomQuestions.length) // Сохраняем исходное количество
       setQuestionsLoaded(true) // Отмечаем, что вопросы загружены
     }
     
@@ -392,10 +503,40 @@ export default function TrainPage() {
     setIsFinished(false)
     setShowExplanation(false)
     setWrongQuestionIds([]) // Сбрасываем список неправильных ответов
+    setInitialQuestionsCount(0) // Сбрасываем исходное количество
   }
 
   if (isFinished) {
-    const percentage = Math.round((correctAnswers / totalQuestions) * 100)
+    // Используем initialQuestionsCount если questions.length = 0
+    // Если оба равны 0, но correctAnswers > 0, значит все вопросы были правильно отвечены
+    // В этом случае считаем процент как 100%
+    let effectiveTotalQuestions = totalQuestions > 0 ? totalQuestions : initialQuestionsCount
+    
+    // Дополнительная защита: если effectiveTotalQuestions = 0, но correctAnswers > 0,
+    // значит все вопросы были правильно отвечены (в режиме mistakes они удаляются)
+    if (effectiveTotalQuestions === 0 && correctAnswers > 0) {
+      console.warn('[DEBUG render isFinished] effectiveTotalQuestions=0, но correctAnswers>0, используем correctAnswers как total')
+      effectiveTotalQuestions = correctAnswers
+    }
+    
+    const percentage = effectiveTotalQuestions > 0 
+      ? Math.round((correctAnswers / effectiveTotalQuestions) * 100)
+      : (correctAnswers > 0 ? 100 : 0) // Если все правильно отвечены, но totalQuestions=0, показываем 100%
+    
+    console.log('[DEBUG render isFinished] Рендер экрана завершения:', {
+      correctAnswers,
+      totalQuestions,
+      initialQuestionsCount,
+      effectiveTotalQuestions,
+      questionsLength: questions.length,
+      percentage,
+      isNaN: isNaN(percentage),
+      isFinite: isFinite(percentage),
+      mode,
+      wrongQuestionIdsCount: wrongQuestionIds.length,
+      userProgressWrongIds: userProgress[subjectId]?.wrongQuestionIds?.length || 0,
+      calculation: `${correctAnswers} / ${effectiveTotalQuestions} = ${percentage}%`
+    })
     return (
       <DesktopOnly>
         <div className="min-h-screen bg-canvas p-8 flex items-center justify-center">
@@ -422,7 +563,7 @@ export default function TrainPage() {
                 Тест завершен!
               </h1>
               <p className="text-2xl text-ink mb-2">
-                Правильных ответов: {correctAnswers} из {totalQuestions}
+                Правильных ответов: {correctAnswers} из {totalQuestions > 0 ? totalQuestions : initialQuestionsCount}
               </p>
               <p className="text-xl text-ink opacity-70 mb-8">
                 Результат: {percentage}%

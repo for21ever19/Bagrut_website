@@ -3,7 +3,7 @@ export default function DefaultContent() {
     <div className="prose prose-stone prose-lg max-w-none">
       <h1 className="text-ink">Учебные материалы</h1>
       
-      <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded mb-8">
+      <div className="pl-6 border-l-4 border-[#E1C858] my-6">
         <p className="text-ink font-semibold mb-2">
           Материалы для этого предмета готовятся
         </p>
