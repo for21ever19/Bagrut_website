@@ -23,7 +23,7 @@ const subjects: Subject[] = [
     color: '#E6B89C',
     position: 'top-left', // Слева-Сверху
     delay: 0.2,
-    imageSrc: '/images/folders/folder-history.png',
+    imageSrc: '/Bagrut_website/images/folders/folder-history.png',
   },
   {
     id: 'civics',
@@ -31,7 +31,7 @@ const subjects: Subject[] = [
     color: '#9FB8AD',
     position: 'bottom-left', // Слева-Снизу
     delay: 0.4,
-    imageSrc: '/images/folders/folder-civics.png',
+    imageSrc: '/Bagrut_website/images/folders/folder-civics.png',
   },
   {
     id: 'tanakh',
@@ -39,7 +39,7 @@ const subjects: Subject[] = [
     color: '#D4C5A8',
     position: 'top-right', // Справа-Сверху
     delay: 0.3,
-    imageSrc: '/images/folders/folder-tanakh.png',
+    imageSrc: '/Bagrut_website/images/folders/folder-tanakh.png',
   },
   {
     id: 'literature',
@@ -47,7 +47,7 @@ const subjects: Subject[] = [
     color: '#C7B2BE',
     position: 'bottom-right', // Справа-Снизу
     delay: 0.5,
-    imageSrc: '/images/folders/folder-lit.png',
+    imageSrc: '/Bagrut_website/images/folders/folder-lit.png',
   },
 ]
 
@@ -71,7 +71,7 @@ export default function Home() {
               className="relative z-0 pointer-events-none"
             >
               <Image
-                src="/images/backpack.png"
+                src="/Bagrut_website/images/backpack.png"
                 alt="Рюкзак"
                 width={625}
                 height={625}
