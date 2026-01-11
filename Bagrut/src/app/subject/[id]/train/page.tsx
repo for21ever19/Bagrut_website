@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { X, CheckCircle2, XCircle, Loader2 } from 'lucide-react'
@@ -34,7 +34,25 @@ const subjectNames: Record<string, string> = {
   literature: 'Литература',
 }
 
-export default function TrainPage() {
+// Компонент для отображения состояния загрузки в Suspense fallback
+function LoadingFallback() {
+  return (
+    <DesktopOnly>
+      <div className="min-h-screen bg-canvas p-8 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white rounded-xl shadow-lg max-w-2xl w-full p-8 text-center"
+        >
+          <Loader2 className="w-12 h-12 text-accent-gold animate-spin mx-auto mb-4" />
+          <p className="text-ink font-semibold">Загрузка вопросов...</p>
+        </motion.div>
+      </div>
+    </DesktopOnly>
+  )
+}
+
+function TrainPageContent() {
   const router = useRouter()
   const params = useParams()
   const searchParams = useSearchParams()
@@ -766,6 +784,14 @@ export default function TrainPage() {
         </motion.div>
       </div>
     </DesktopOnly>
+  )
+}
+
+export default function TrainPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <TrainPageContent />
+    </Suspense>
   )
 }
 
