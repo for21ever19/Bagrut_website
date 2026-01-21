@@ -21,6 +21,7 @@ export interface Question {
   options: string[]
   correctAnswer: string
   explanation: string
+  label?: string
 }
 
 // Объединение всех вопросов в один массив
