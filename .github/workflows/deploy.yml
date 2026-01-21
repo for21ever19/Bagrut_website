@@ -37,18 +37,13 @@ jobs:
         working-directory: ./Bagrut
         run: npm run build
 
-      - name: Create Bagrut_website directory structure
-        run: |
-          mkdir -p ./Bagrut_website
-          cp -r ./Bagrut/out/* ./Bagrut_website/
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './Bagrut_website'
+          path: './Bagrut/out'
 
   deploy:
     environment:
