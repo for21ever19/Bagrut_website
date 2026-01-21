@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { X, CheckCircle2, XCircle, Loader2 } from 'lucide-react'
 import DesktopOnly from '../../../components/ui/DesktopOnly'
-import { allQuestions, Question } from '../../../../data/subjects/ezrahut'
+import { allQuestions as ezrahutQuestions, Question } from '../../../../data/subjects/ezrahut'
+import { allQuestions as literatureQuestions } from '../../../../data/subjects/literature'
 import { useProgress } from '../../../hooks/useProgress'
 
 // Fisher-Yates Shuffle алгоритм для качественного перемешивания массива
@@ -68,6 +69,9 @@ function TrainPageContent() {
 
   // Хук для управления прогрессом
   const { saveResult, getSubjectProgress, resolveMistake, progress: userProgress } = useProgress()
+  
+  // Динамический выбор источника вопросов на основе subjectId
+  const allQuestions = subjectId === 'literature' ? literatureQuestions : ezrahutQuestions
 
   const [questions, setQuestions] = useState<Question[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -707,6 +711,15 @@ function TrainPageContent() {
             </div>
           </div>
 
+          {/* Лейбл раздела (если есть) */}
+          {currentQuestion.label && (
+            <div className="mb-4">
+              <span className="inline-block px-3 py-1 bg-accent-gold/10 text-accent-gold text-xs font-semibold rounded-full">
+                {currentQuestion.label}
+              </span>
+            </div>
+          )}
+
           {/* Вопрос */}
           <h2 className="text-xl font-serif font-bold text-ink mb-6">
             {currentQuestion.question}
@@ -794,4 +807,3 @@ export default function TrainPage() {
     </Suspense>
   )
 }
-
